@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [ "$(/usr/bin/id -u)" -eq 0 ]; then
+  exec /usr/bin/python3 /opt/cngpu-drive-evidence/drive_evidence.py "$@"
+fi
+exec /usr/bin/sudo -n /usr/bin/python3 /opt/cngpu-drive-evidence/drive_evidence.py "$@"

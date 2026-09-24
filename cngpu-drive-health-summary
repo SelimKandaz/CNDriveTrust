@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+MODULE_PATH="/opt/cngpu-drive-evidence${PYTHONPATH:+:$PYTHONPATH}"
+if [ "$(/usr/bin/id -u)" -eq 0 ]; then
+  export PYTHONPATH="$MODULE_PATH"
+  exec /usr/bin/python3 -m cndrivetrust.health_cli "$@"
+fi
+exec /usr/bin/sudo -n /usr/bin/env PYTHONPATH="$MODULE_PATH" /usr/bin/python3 -m cndrivetrust.health_cli "$@"

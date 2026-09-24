@@ -1,0 +1,20 @@
+{
+  "project": "CNDriveTrust",
+  "title": "Evidence-Driven SSD/NVMe Readiness & Provenance",
+  "version": "2.1.0",
+  "release_date": "2026-09-24",
+  "safety_class": "READ_ONLY_TARGET_MEDIA",
+  "artifact_schema": "2.1",
+  "physical_acceptance": "PENDING_NEW_TARGET_MEDIA",
+  "features": [
+    "Samsung Extended SMART 0xCA immutable collection and decoding",
+    "NAND erase-cycle and vendor workload-time consistency analysis",
+    "NVMe sanitize Global Data Erased semantic decoding",
+    "full-capacity read-only verification with pre/post counter checks",
+    "history-discontinuity, near-new, and lightly-used classification",
+    "HTML, Markdown, normalized JSON, raw evidence, manifest and SHA-256 output",
+    "technician Health & Usage Summary with separate health, endurance, error, usage, performance and history-trust dimensions",
+    "lightweight live health collection combined with explicitly labeled preserved last-test performance",
+    "isolated Samsung vendor decoder and modular terminal/JSON/HTML reporting"
+  ]
+}
