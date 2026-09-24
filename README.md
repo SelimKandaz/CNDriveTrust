@@ -1,7 +1,7 @@
 # CNDriveTrust
 
 **Evidence-Driven SSD/NVMe Readiness & Provenance**  
-Version: 2.1.0
+Version: 2.2.0
 
 CNDriveTrust is the isolated storage-evidence product under the top-level
 CloudNinjas Hardware Operations menu. It does not import ASUS platform, BMC,
@@ -22,6 +22,23 @@ lightweight current identity/SMART/NVMe collection, consumes the most recent
 preserved full-test result for performance context, and separately reports
 media health, endurance, error state, usage, performance, and history trust.
 It writes terminal, JSON and HTML summaries without rerunning a full read.
+
+Drive Tools Option 3 performs read-only erase/sanitize capability discovery.
+It identifies NVMe, ATA, SCSI/SAS, or generic block-device paths and records
+supported capability evidence. Destructive execution is disabled and no
+execution backend exists in this release.
+
+Drive Tools Option 4 is a lightweight CNDriveAI placeholder and interface
+contract. No model, inference runtime, service, AI framework, or model storage
+is installed by CNDriveTrust 2.2.0.
+
+Capability-discovery bundles are stored under:
+
+`/var/lib/harddrive-test-results/ERASE_CAPABILITY/<SERIAL>/<ERASECAP_RUN_ID>/`
+
+They contain raw read-only query output, normalized capability JSON,
+technician text/HTML, manifest, and SHA-256 checksums. No bundle is created when
+only the protected boot disk is present.
 
 ## Evidence layers
 

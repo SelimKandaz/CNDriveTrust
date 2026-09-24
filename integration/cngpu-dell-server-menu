@@ -1,0 +1,230 @@
+#!/usr/bin/env bash
+set -u
+
+VERSION="v5.9.1-dell-server-menu"
+LOGDIR="/var/log/cngpustress/menu"
+mkdir -p "$LOGDIR"
+LOG="$LOGDIR/dell_server_menu_$(date +%Y%m%d_%H%M%S).log"
+
+exec > >(tee -a "$LOG") 2>&1
+
+run_cmd() {
+  local label="$1"
+  shift
+
+  clear || true
+  echo "=============================================================="
+  echo "        CloudNinjas Dell Server Program"
+  echo "=============================================================="
+  echo
+  echo "Selected: $label"
+  echo "Log: $LOG"
+  echo
+  echo "Starting..."
+  echo
+
+  exec "$@"
+}
+
+pause_shell() {
+  echo
+  echo "Press Enter for shell."
+  read -r _
+  exec /bin/bash
+}
+
+safe_shell() {
+  clear || true
+  echo "=============================================================="
+  echo "        CNGPUStress Maintenance Shell"
+  echo "=============================================================="
+  echo
+  echo "Type exit to close shell."
+  echo
+  exec /bin/bash
+}
+
+show_menu() {
+  clear || true
+
+  echo "=============================================================="
+  echo "        CloudNinjas Dell Server Program"
+  echo "=============================================================="
+  echo
+  echo "Boot Menu: $VERSION"
+  echo
+  echo "Actions:"
+  echo "  1. Update firmware + hardware test + Dell TSR + reports"
+  echo "  2. Update firmware only"
+  echo "  3. Hardware test only"
+  echo "  4. Burn-in test"
+  echo "  D. Check/download latest Dell update package online"
+  echo "  A. Apply staged Dell online refresh"
+  echo "  E. Collect Dell TSR evidence only"
+  echo "  F. Refresh final board / report portal"
+  echo "  I. iDRAC tools / factory reset"
+  echo "  B. Back to product selection"
+  echo "  M. Maintenance shell"
+  echo "  S. Safe shutdown"
+  echo "  R. Reboot"
+  echo "  C. Shell"
+  echo
+  echo "Notes:"
+  echo "  Option 1 uses the currently staged local Dell firmware repo."
+  echo "  Use D when you want to check/download newer Dell packages."
+  echo "  Dell TSR and report portal are finalized after the test workflow."
+  echo
+  echo "Log: $LOG"
+  echo
+  echo "Waiting for explicit technician input. No action starts automatically."
+}
+
+run_online_refresh() {
+  clear || true
+  echo "=============================================================="
+  echo "        Dell Online Update Package Refresh"
+  echo "=============================================================="
+  echo
+  echo "Purpose:"
+  echo "  Check/download newer Dell update packages when internet is available."
+  echo
+  echo "Recommended:"
+  echo "  Run this only when you intentionally want to refresh the local firmware repo."
+  echo "  After refresh/import, run option 1."
+  echo
+
+  if command -v cngpu-dell-suu-refresh-manager >/dev/null 2>&1; then
+    cngpu-dell-suu-refresh-manager || true
+  elif command -v cngpu-refresh-dell-online >/dev/null 2>&1; then
+    cngpu-refresh-dell-online || true
+  else
+    echo "MISSING: cngpu-dell-suu-refresh-manager and cngpu-refresh-dell-online"
+  fi
+
+  pause_shell
+}
+
+run_apply_online_refresh() {
+  clear || true
+  echo "=============================================================="
+  echo "        Apply Staged Dell Online Refresh"
+  echo "=============================================================="
+  echo
+  echo "This imports/applies the staged downloaded Dell package into the local repo."
+  echo
+
+  if command -v cngpu-apply-dell-online-refresh >/dev/null 2>&1; then
+    cngpu-apply-dell-online-refresh || true
+  elif command -v cngpu-dell-suu-refresh-manager >/dev/null 2>&1; then
+    cngpu-dell-suu-refresh-manager || true
+  else
+    echo "MISSING: cngpu-apply-dell-online-refresh and cngpu-dell-suu-refresh-manager"
+  fi
+
+  pause_shell
+}
+
+run_tsr_only() {
+  clear || true
+  echo "=============================================================="
+  echo "        CNGPUStress Dell TSR Evidence"
+  echo "=============================================================="
+  echo
+  cngpu-sel-preclean-before-tsr || true
+  cngpu-dell-tsr-reliable || true
+  cngpu-report-portal || true
+  cngpu-final-board || true
+  pause_shell
+}
+
+handle_choice() {
+  local choice="$1"
+
+  case "$choice" in
+    1)
+      run_cmd "Update firmware + hardware test + Dell TSR + reports" /usr/local/bin/cngpu-update-test-tsr-wrapper
+      ;;
+    2)
+      if command -v cngpu-dell-r640-update-only >/dev/null 2>&1; then
+        run_cmd "Update firmware only" /usr/local/bin/cngpu-dell-r640-update-only
+      else
+        echo "MISSING: cngpu-dell-r640-update-only"
+        pause_shell
+      fi
+      ;;
+    3)
+      if command -v cngpu-test-only-auto >/dev/null 2>&1; then
+        run_cmd "Hardware test only" /usr/local/bin/cngpu-test-only-auto
+      else
+        run_cmd "Hardware test only fallback" /usr/local/bin/cngpu-hardware-validation
+      fi
+      ;;
+    4)
+      if command -v cngpu-burnin-auto >/dev/null 2>&1; then
+        run_cmd "Burn-in test" /usr/local/bin/cngpu-burnin-auto
+      else
+        echo "MISSING: cngpu-burnin-auto"
+        pause_shell
+      fi
+      ;;
+    [Dd])
+      run_online_refresh
+      ;;
+    [Aa])
+      run_apply_online_refresh
+      ;;
+    [Ee])
+      run_tsr_only
+      ;;
+    [Ff])
+      cngpu-report-portal || true
+      run_cmd "Refresh final board / report portal" /usr/local/bin/cngpu-final-board
+      ;;
+    [Ii])
+      if command -v cngpu-idrac-tools >/dev/null 2>&1; then
+        run_cmd "iDRAC tools" /usr/local/bin/cngpu-idrac-tools
+      else
+        echo "MISSING: cngpu-idrac-tools"
+        pause_shell
+      fi
+      ;;
+    [Bb])
+      exit 0
+      ;;
+    [Mm])
+      safe_shell
+      ;;
+    [Ss])
+      echo "Safe shutdown selected."
+      systemctl poweroff
+      ;;
+    [Rr])
+      echo "Reboot selected."
+      systemctl reboot
+      ;;
+    [Cc])
+      safe_shell
+      ;;
+    *)
+      echo "Unknown choice: $choice"
+      sleep 2
+      ;;
+  esac
+}
+
+if [ ! -t 0 ]; then
+  echo "ERROR: technician menu requires an interactive terminal; no action was started."
+  exit 2
+fi
+
+while true; do
+  show_menu
+  if read -rsn1 key; then
+    echo
+    echo "KEY_PRESSED=$key"
+    handle_choice "$key"
+  else
+    echo "Console input unavailable; no action was selected."
+    sleep 1
+  fi
+done

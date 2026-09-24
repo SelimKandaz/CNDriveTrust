@@ -25,9 +25,19 @@ Samsung PCI VID `0x144D` before collecting or interpreting page `0xCA`.
 text, HTML, manifest and checksums. Presentation code does not determine a
 health verdict.
 
-## Future modules
+## Erase capability discovery
 
-Erase and sanitize implementations must be independent backends. They may not
-share a command path with read-only Health Summary. CNDriveAI may consume
-normalized JSON but may never choose a destructive target or invoke firmware,
+`cndrivetrust.erase.discovery.collect()` accepts an already protected device
+label and read-only command adapter. It returns normalized capabilities and raw
+records. It has no execution callback. Protocol decoders are isolated under
+`erase/nvme.py`, `erase/ata.py`, and `erase/scsi.py`.
+
+Future destructive implementations must be independent backends. They may not
+share a command path with read-only Health Summary or capability discovery.
+
+## CNDriveAI contract
+
+`cndrivetrust.ai.interface.contract()` exposes the future component's permitted
+inputs/outputs and prohibited authority. It loads no model and imports no AI
+runtime. CNDriveAI may never choose a destructive target or invoke firmware,
 erase, sanitize, or production deployment actions.

@@ -19,7 +19,7 @@ from .history import latest_result
 from .reports import finalize_bundle, render_terminal, write_bundle
 from .vendors import samsung
 
-VERSION = "2.1.0"
+VERSION = "2.2.0"
 DEFAULT_ROOT = Path("/var/lib/harddrive-test-results")
 
 

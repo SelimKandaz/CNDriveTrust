@@ -22,7 +22,7 @@ from cndrivetrust.vendors import samsung as samsung_vendor
 
 PROJECT_NAME = "CNDriveTrust"
 PROJECT_TAGLINE = "Evidence-Driven SSD/NVMe Readiness & Provenance"
-VERSION = "2.1.0"
+VERSION = "2.2.0"
 DEFAULT_RESULT_ROOT = Path("/var/lib/harddrive-test-results")
 DEFAULT_CONFIG = Path("/etc/harddrive-test/config.json")
 CRITICAL_MOUNTS = ("/", "/boot", "/boot/efi")
@@ -600,6 +600,7 @@ def device_label(disk: dict[str, Any]) -> dict[str, Any]:
         "removable": disk.get("rm"),
         "hotplug": disk.get("hotplug"),
         "read_only": disk.get("ro"),
+        "rotational": disk.get("rota"),
         "mountpoints": disk.get("mountpoints") or [],
     }
 
@@ -644,7 +645,7 @@ def capture_global_evidence() -> tuple[dict[str, dict[str, Any]], dict[str, Any]
     records["lsblk"] = run_command(
         [
             "lsblk", "--json", "--bytes", "--paths", "--output",
-            "NAME,KNAME,PATH,TYPE,SIZE,MODEL,SERIAL,TRAN,RM,HOTPLUG,RO,PKNAME,WWN,FSTYPE,MOUNTPOINTS",
+            "NAME,KNAME,PATH,TYPE,SIZE,MODEL,SERIAL,TRAN,ROTA,RM,HOTPLUG,RO,PKNAME,WWN,FSTYPE,MOUNTPOINTS",
         ],
         timeout=30,
     )

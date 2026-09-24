@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+set -u
+
+VERSION="v1.2.0-capability-ai-placeholders"
+LOGDIR="/var/log/cngpustress/menu"
+mkdir -p "$LOGDIR"
+LOG="$LOGDIR/drive_tools_menu_$(date +%Y%m%d_%H%M%S).log"
+exec > >(tee -a "$LOG") 2>&1
+
+show_menu() {
+  clear || true
+  echo "=============================================================="
+  echo "        CNDriveTrust / Drive Tools"
+  echo "=============================================================="
+  echo
+  echo "Drive Tools Menu: $VERSION"
+  echo
+  echo "  1. Test Disk"
+  echo "     Read-only identity, SMART/vendor evidence, full read and reports"
+  echo
+  echo "  2. Health & Usage Summary"
+  echo "     Live health/usage, preserved performance and history-trust analysis"
+  echo
+  echo "  3. Erase / Sanitize"
+  echo "     Read-only capability discovery; destructive execution disabled"
+  echo
+  echo "  4. CNDriveAI"
+  echo "     Offline engineering assistant placeholder; no AI runtime installed"
+  echo
+  echo "  B. Back to product selection"
+  echo "  M. Maintenance shell"
+  echo
+  echo "SAFETY: Options 1-3 are read-only. Erase execution is disabled."
+  echo "Log: $LOG"
+}
+
+placeholder() {
+  local title="$1"
+  clear || true
+  echo "=============================================================="
+  echo "        $title"
+  echo "=============================================================="
+  echo
+  echo "COMING SOON / NOT IMPLEMENTED"
+  echo "No disk command was executed and no device state was changed."
+  echo
+  echo "Press Enter to return to Drive Tools."
+  read -r _
+}
+
+maintenance_shell() {
+  clear || true
+  echo "CNDriveTrust Maintenance Shell"
+  echo "Type exit to return to Drive Tools."
+  /bin/bash || true
+}
+
+handle_choice() {
+  case "$1" in
+    1)
+      if command -v cngpu-drive-evidence-test >/dev/null 2>&1; then
+        cngpu-drive-evidence-test || true
+        echo
+        echo "CNDriveTrust returned. Press Enter to continue."
+        read -r _
+      else
+        echo "MISSING: cngpu-drive-evidence-test"
+        sleep 3
+      fi
+      ;;
+    2)
+      if command -v cngpu-drive-health-summary >/dev/null 2>&1; then
+        cngpu-drive-health-summary || true
+        echo
+        echo "Health Summary returned. Press Enter to continue."
+        read -r _
+      else
+        echo "MISSING: cngpu-drive-health-summary"
+        sleep 3
+      fi
+      ;;
+    3)
+      if command -v cngpu-drive-erase-capabilities >/dev/null 2>&1; then
+        cngpu-drive-erase-capabilities || true
+      else
+        echo "MISSING: cngpu-drive-erase-capabilities"
+        sleep 3
+      fi
+      ;;
+    4)
+      if command -v cngpu-drive-ai-placeholder >/dev/null 2>&1; then
+        cngpu-drive-ai-placeholder || true
+      else
+        echo "MISSING: cngpu-drive-ai-placeholder"
+        sleep 3
+      fi
+      ;;
+    [Bb]) exit 0 ;;
+    [Mm]) maintenance_shell ;;
+    *) echo "Unknown choice: $1"; sleep 2 ;;
+  esac
+}
+
+if [ ! -t 0 ]; then
+  echo "ERROR: Drive Tools menu requires an interactive terminal; no action was started."
+  exit 2
+fi
+
+while true; do
+  show_menu
+  if read -rsn1 key; then
+    echo
+    echo "KEY_PRESSED=$key"
+    handle_choice "$key"
+  else
+    echo "Console input unavailable; no action was selected."
+    sleep 1
+  fi
+done

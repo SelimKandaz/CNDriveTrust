@@ -17,6 +17,10 @@ cndrivetrust/history.py           read-only preserved-result lookup
 cndrivetrust/formatting.py        units without loss of raw precision
 cndrivetrust/reports.py           terminal, JSON, HTML, manifest and hashes
 cndrivetrust/vendors/samsung.py   VID-gated Samsung 0xCA decoder
+cndrivetrust/erase/discovery.py   read-only protocol/capability routing
+cndrivetrust/erase/{nvme,ata,scsi}.py isolated protocol decoders
+cndrivetrust/erase/cli.py         discovery UI; execution disabled
+cndrivetrust/ai/interface.py      future optional AI authority contract
 ```
 
 The core works without an AI component. Future erase backends and CNDriveAI

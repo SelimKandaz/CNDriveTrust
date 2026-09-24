@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+export PYTHONPATH="/opt/cngpu-drive-evidence${PYTHONPATH:+:$PYTHONPATH}"
+exec /usr/bin/python3 -m cndrivetrust.ai.placeholder "$@"
+

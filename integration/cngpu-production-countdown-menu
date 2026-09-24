@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -u
+
+VERSION="v1.0.0-two-product-launcher"
+LOGDIR="/var/log/cngpustress/menu"
+mkdir -p "$LOGDIR"
+LOG="$LOGDIR/hardware_main_menu_$(date +%Y%m%d_%H%M%S).log"
+exec > >(tee -a "$LOG") 2>&1
+
+show_menu() {
+  clear || true
+  echo "=============================================================="
+  echo "        CloudNinjas Hardware Operations"
+  echo "=============================================================="
+  echo
+  echo "Product Selection: $VERSION"
+  echo
+  echo "  1. Dell Server Program"
+  echo "     Firmware, diagnostics, burn-in, TSR and Dell reports"
+  echo
+  echo "  2. CNDriveTrust / Drive Tools"
+  echo "     SSD, NVMe, SAS and SATA evidence/testing workspace"
+  echo
+  echo "  M. Maintenance shell"
+  echo "  S. Safe shutdown"
+  echo "  R. Reboot"
+  echo
+  echo "Waiting for explicit technician input. Nothing starts automatically."
+  echo "Log: $LOG"
+}
+
+maintenance_shell() {
+  clear || true
+  echo "CloudNinjas Maintenance Shell"
+  echo "Type exit to return to product selection."
+  /bin/bash || true
+}
+
+handle_choice() {
+  case "$1" in
+    1)
+      if [ -x /usr/local/bin/cngpu-dell-server-menu ]; then
+        /usr/local/bin/cngpu-dell-server-menu || true
+      else
+        echo "MISSING: /usr/local/bin/cngpu-dell-server-menu"
+        sleep 3
+      fi
+      ;;
+    2)
+      if [ -x /usr/local/bin/cngpu-drive-tools-menu ]; then
+        /usr/local/bin/cngpu-drive-tools-menu || true
+      else
+        echo "MISSING: /usr/local/bin/cngpu-drive-tools-menu"
+        sleep 3
+      fi
+      ;;
+    [Mm]) maintenance_shell ;;
+    [Ss]) echo "Safe shutdown selected."; systemctl poweroff ;;
+    [Rr]) echo "Reboot selected."; systemctl reboot ;;
+    *) echo "Unknown choice: $1"; sleep 2 ;;
+  esac
+}
+
+if [ ! -t 0 ]; then
+  echo "ERROR: product selection requires an interactive terminal; no action was started."
+  exit 2
+fi
+
+while true; do
+  show_menu
+  if read -rsn1 key; then
+    echo
+    echo "KEY_PRESSED=$key"
+    handle_choice "$key"
+  else
+    echo "Console input unavailable; no action was selected."
+    sleep 1
+  fi
+done
