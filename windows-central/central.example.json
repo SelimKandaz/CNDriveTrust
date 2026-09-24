@@ -1,0 +1,12 @@
+{
+  "product": "CNDriveTrust",
+  "bind": "0.0.0.0",
+  "advertise_address": "CENTRAL_LAN_IP",
+  "port": 8090,
+  "python_path": "C:\\Path\\To\\python.exe",
+  "certificate": "C:\\Path\\To\\central-cert.pem",
+  "private_key": "C:\\Path\\To\\central-key.pem",
+  "token_file": "C:\\CNDriveTrust\\Central\\secrets\\central-token.txt",
+  "archive_root": "C:\\CNDriveTrust\\Central\\runs",
+  "namespace": "CNDriveTrust"
+}

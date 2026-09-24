@@ -22,7 +22,7 @@ from cndrivetrust.vendors import samsung as samsung_vendor
 
 PROJECT_NAME = "CNDriveTrust"
 PROJECT_TAGLINE = "Evidence-Driven SSD/NVMe Readiness & Provenance"
-VERSION = "2.2.0"
+VERSION = "2.3.0"
 DEFAULT_RESULT_ROOT = Path("/var/lib/harddrive-test-results")
 DEFAULT_CONFIG = Path("/etc/harddrive-test/config.json")
 CRITICAL_MOUNTS = ("/", "/boot", "/boot/efi")
@@ -2128,6 +2128,17 @@ def run_workflow() -> int:
         write_bundle(result_dir, result, global_records, per_device)
         export_bundle(result_dir, result)
         freeze_bundle(result_dir)
+        try:
+            from cndrivetrust.central.sync import enqueue_finalized
+            sync = enqueue_finalized(
+                result_dir,
+                kind="Test-Disk",
+                serial=serial_component,
+                batch_id=safe_component(po_batch, "UNASSIGNED"),
+            )
+            print(f"Central: {sync.get('state', 'SYNC_PENDING')}")
+        except Exception as exc:
+            print(f"Central: SYNC_PENDING ({type(exc).__name__}); local evidence remains complete.")
         run_dirs.append(result_dir)
         print(f"{result['target'].get('device_path')}: {result['analysis']['disposition']} | {result_dir}")
     return 0

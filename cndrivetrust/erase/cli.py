@@ -15,7 +15,7 @@ from . import EXECUTION_STATUS
 from .discovery import collect, contains_prohibited_command
 from .reports import render_terminal, write_bundle
 
-VERSION = "2.2.0"
+VERSION = "2.3.0"
 
 
 def utc_now() -> str:
@@ -131,4 +131,3 @@ def main(argv=None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

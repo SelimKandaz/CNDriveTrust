@@ -1,7 +1,7 @@
 # CNDriveTrust
 
 **Evidence-Driven SSD/NVMe Readiness & Provenance**  
-Version: 2.2.0
+Version: 2.3.0
 
 CNDriveTrust is the isolated storage-evidence product under the top-level
 CloudNinjas Hardware Operations menu. It does not import ASUS platform, BMC,
@@ -30,7 +30,12 @@ execution backend exists in this release.
 
 Drive Tools Option 4 is a lightweight CNDriveAI placeholder and interface
 contract. No model, inference runtime, service, AI framework, or model storage
-is installed by CNDriveTrust 2.2.0.
+is installed by CNDriveTrust 2.3.0.
+
+Drive Tools Option 5 reports CNDriveTrust Central connectivity and the durable
+local sync queue, and can retry pending finalized runs. Central delivery is
+offline-first: a valid local test remains valid if Windows Central is offline.
+The receiver is isolated from ASUS evidence under `C:\CNDriveTrust\Central`.
 
 Capability-discovery bundles are stored under:
 

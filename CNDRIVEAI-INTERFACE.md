@@ -39,3 +39,10 @@ execute erase/sanitize/format, modify namespaces, flash firmware, or deploy
 production code automatically. Deterministic CNDriveTrust safety gates remain
 authoritative and cannot be replaced by model output.
 
+## Network boundary
+
+The Ubuntu host and CNDriveTrust retain normal LAN and Central connectivity.
+Only a future CNDriveAI service is denied Internet, DNS, and direct LAN access
+by default. It should run as a dedicated user under systemd sandboxing/private
+network isolation and consume localized evidence through files or local Unix
+IPC. Version 2.3.0 still installs no AI model or runtime.

@@ -19,7 +19,7 @@ from .history import latest_result
 from .reports import finalize_bundle, render_terminal, write_bundle
 from .vendors import samsung
 
-VERSION = "2.2.0"
+VERSION = "2.3.0"
 DEFAULT_ROOT = Path("/var/lib/harddrive-test-results")
 
 
@@ -158,10 +158,16 @@ def run() -> int:
     finalize_bundle(run_dir, summary)
     if export.get("status") == "EXPORTED":
         shutil.copytree(run_dir, Path(export["destination"]), dirs_exist_ok=True)
+    try:
+        from .central.sync import enqueue_finalized
+        sync = enqueue_finalized(run_dir, kind="Health-Summary", serial=serial_component)
+    except Exception as exc:
+        sync = {"state": "SYNC_PENDING", "error": type(exc).__name__}
     print("\n" + render_terminal(summary))
     print(f"JSON: {run_dir / 'normalized' / 'health-summary.json'}")
     print(f"HTML: {run_dir / 'reports' / 'health-summary.html'}")
     print(f"Export: {export['status']}")
+    print(f"Central: {sync.get('state', 'SYNC_PENDING')}")
     return 0
 
 

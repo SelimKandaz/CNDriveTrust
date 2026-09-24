@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "endpoint": "https://10.1.10.51:8090",
+  "verify_tls": true,
+  "ca_file": "/etc/cndrivetrust/central-ca.pem",
+  "token_file": "/etc/cndrivetrust/central-token",
+  "queue_database": "/var/lib/cndrivetrust-central/queue.sqlite3",
+  "spool_directory": "/var/lib/cndrivetrust-central/spool"
+}

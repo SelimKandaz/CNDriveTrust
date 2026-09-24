@@ -22,13 +22,13 @@ class MenuIntegrationTests(unittest.TestCase):
             self.assertIn(label, text)
         self.assertIn("[Bb])", text)
 
-    def test_drive_menu_routes_all_four_entries(self):
+    def test_drive_menu_routes_all_five_entries(self):
         text = self.text("cngpu-drive-tools-menu")
-        for label in ("Test Disk", "Health & Usage Summary", "Erase / Sanitize", "CNDriveAI"):
+        for label in ("Test Disk", "Health & Usage Summary", "Erase / Sanitize", "CNDriveAI", "Sync / Central Status"):
             self.assertIn(label, text)
         for command in (
             "cngpu-drive-evidence-test", "cngpu-drive-health-summary",
-            "cngpu-drive-erase-capabilities", "cngpu-drive-ai-placeholder",
+            "cngpu-drive-erase-capabilities", "cngpu-drive-ai-placeholder", "cngpu-drive-central",
         ):
             self.assertIn(command, text)
         self.assertIn("[Bb])", text)
@@ -41,4 +41,3 @@ class MenuIntegrationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

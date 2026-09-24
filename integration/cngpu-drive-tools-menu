@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -u
 
-VERSION="v1.2.0-capability-ai-placeholders"
+VERSION="v1.3.0-central-sync"
 LOGDIR="/var/log/cngpustress/menu"
 mkdir -p "$LOGDIR"
 LOG="$LOGDIR/drive_tools_menu_$(date +%Y%m%d_%H%M%S).log"
@@ -26,6 +26,9 @@ show_menu() {
   echo
   echo "  4. CNDriveAI"
   echo "     Offline engineering assistant placeholder; no AI runtime installed"
+  echo
+  echo "  5. Sync / Central Status"
+  echo "     Central connectivity, persistent queue status and retry"
   echo
   echo "  B. Back to product selection"
   echo "  M. Maintenance shell"
@@ -92,6 +95,21 @@ handle_choice() {
         cngpu-drive-ai-placeholder || true
       else
         echo "MISSING: cngpu-drive-ai-placeholder"
+        sleep 3
+      fi
+      ;;
+    5)
+      if command -v cngpu-drive-central >/dev/null 2>&1; then
+        clear || true
+        cngpu-drive-central status || true
+        echo
+        read -r -p "Retry pending runs now? [y/N]: " retry
+        case "$retry" in [Yy]*) cngpu-drive-central retry || true ;; esac
+        echo
+        echo "Press Enter to return to Drive Tools."
+        read -r _
+      else
+        echo "MISSING: cngpu-drive-central"
         sleep 3
       fi
       ;;

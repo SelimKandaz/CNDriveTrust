@@ -1,10 +1,10 @@
 {
   "project": "CNDriveTrust",
   "title": "Evidence-Driven SSD/NVMe Readiness & Provenance",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "release_date": "2026-09-24",
   "safety_class": "READ_ONLY_TARGET_MEDIA",
-  "artifact_schema": "2.1",
+  "artifact_schema": "2.2",
   "physical_acceptance": "PARTIAL_NO_NON_BOOT_TARGET_ATTACHED",
   "features": [
     "Samsung Extended SMART 0xCA immutable collection and decoding",
@@ -20,6 +20,8 @@
     "TESTED: boot protection, disabled execution, protocol parsers and report generation",
     "PLACEHOLDER: CNDriveAI menu and authority/data contract",
     "DISABLED: all erase, sanitize, format, namespace and overwrite execution",
-    "FUTURE: destructive backends and optional offline AI runtime"
+    "FUTURE: destructive backends and optional offline AI runtime",
+    "IMPLEMENTED: offline-first authenticated TLS Central synchronization with persistent retry queue",
+    "IMPLEMENTED: separate CNDriveTrust Windows Central namespace and deterministic serial/run history"
   ]
 }
